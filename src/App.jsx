@@ -2,21 +2,25 @@ import './index.css';
 import {LoadingScreen} from "./components/LoadingScreen.jsx";
 import {Navbar} from "./components/Navbar.jsx";
 import {MobileMenu} from "./components/MobileMenu.jsx";
+
+// Home Page Components
 import {Home} from "./components/HomeSection/Home.jsx";
 import {About} from "./components/HomeSection/About.jsx";
 import {Projects} from "./components/HomeSection/Projects.jsx";
 import {Contacts} from "./components/HomeSection/Contacts.jsx";
 import {WorkExperience} from "./components/HomeSection/WorkExperience.jsx";
 
-import DSASelector from "./pages/DSASelector.jsx";
-import ArrayVisualization from "./pages/ArrayVisualization.jsx";
-
-import Chatbot from "./pages/Chatbot.jsx";
-import {GraphicsCourse} from "./pages/GraphicsCourse.jsx";
+// Tutorial Components
 import {Tutorial} from "./pages/Tutorial.jsx";
+
+
+// Chatbot Components
+import Chatbot from "./pages/Chatbot.jsx";
+import ChatBotBeta from "./pages/ChatBotBeta.jsx";
 import VideoControls from "./components/ChatbotSection/videoControls/VideoControls.jsx";
+import {Scene} from "./components/ChatbotSection/scene/Scene.jsx";
 
-
+// Authentication Components
 import Login from "./pages/Login.jsx";
 import SignUp from "./pages/Signup.jsx";
 
@@ -24,7 +28,6 @@ import BackgroundRoom from "./pages/BackgroundRoom.jsx";
 
 import {BrowserRouter, HashRouter, Routes, Route, useLocation} from "react-router-dom";
 import {useRef, useState} from "react";
-import {Canvas, useFrame} from "@react-three/fiber";
 
 
 // Create a main portfolio page component
@@ -74,10 +77,6 @@ function App() {
                             {/* Root route serves the portfolio */}
                             <Route path="/" element={<Portfolio />} />
                             <Route path="/denniswong-portfolio" element={<Portfolio />} />
-                            <Route path="/dsa" element={<DSASelector />} />
-
-                            {/* Arrays Route */}
-                            <Route path="/dsa/data-structure/array" element={<ArrayVisualization />} />
 
                             <Route path="/chatbot" element={<Chatbot />} />
 
@@ -91,6 +90,8 @@ function App() {
 
                             {/* Testing Routes */}
                             <Route path={"/video-test"} element={<VideoControls/>}/>
+                            <Route path={"/scene-test"} element={<Scene/>}/>
+                            <Route path={"/chatbot-test"} element={<ChatBotBeta/>}/>
 
                         </Routes>
                     </Layout>

@@ -1,116 +1,271 @@
-import {useEffect, useState} from 'react';
-import {Header} from '../components/ChatbotSection/chatControls/Header.jsx';
-import {MessageList} from '../components/ChatbotSection/chatControls/MessageList.jsx';
-import {MessageBox} from '../components/ChatbotSection/chatControls/MessageBox.jsx';
+import { useEffect, useState, useRef } from 'react';
+
+import { Header } from '../components/ChatbotSection/chatControls/Header.jsx';
+import { MessageList } from '../components/ChatbotSection/chatControls/MessageList.jsx';
+import { MessageBox } from '../components/ChatbotSection/chatControls/MessageBox.jsx';
+
 import VideoControls from "../components/ChatbotSection/videoControls/VideoControls.jsx";
-import axios from "axios";
-import {useLocation, useNavigate} from "react-router-dom";
+import TTSControls from "../components/ChatbotSection/audioControls/TTSControls.jsx";
+
+import {Scene} from "../components/ChatbotSection/scene/Scene.jsx";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Client } from '@stomp/stompjs';
 
 
-const api = axios.create({
-    baseURL: 'http://localhost:8080/',
-    timeout: 15000,
-    headers: {
-        'Content-Type': 'application/json',
-    }
-});
 
 export default function Chatbot() {
-
     const location = useLocation();
     const navigate = useNavigate();
+
+    // State variables
     const [user, setUser] = useState(null);
+
+    // Message and response states
     const [input, setInput] = useState('');
+    const [response, setResponse] = useState('');
+    const [audio, setAudio] = useState(null);
+    const [expression, setExpression] = useState([]);
+
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // Load the chat history for the user
-    const loadChatHistory = async (userId) => {
-        try {
-            const response = await api.get(`/api/v1/chat/user/${userId}`);
-            const chatHistory = response.data;
+    const [connected, setConnected] = useState(false);
 
-            const formattedChatHistory = chatHistory.toReversed().flatMap(chat => [
-                {
-                    id: `${chat.id}-user`,
-                    role: 'user',
-                    content: chat.message,
-                },
-                {
-                    id: `${chat.id}-assistant`,
-                    role: 'assistant',
-                    content: chat.response,
-                }
-            ]);
+    const stompClientRef = useRef(null);
 
-            setMessages(formattedChatHistory)
-        } catch (error) {
-            console.error('Error loading chat history:', error);
+    /**
+     * Connect to WebSocket server using native WebSocket
+     */
+    const connectWebSocket = (userId) => {
+        console.log('Connecting to WebSocket for user:', userId);
+
+        // Create STOMP client with native WebSocket
+        const client = new Client({
+            // Use native WebSocket
+            brokerURL: 'ws://localhost:8080/websocket',
+
+            // Reconnect settings
+            reconnectDelay: 5000,
+            heartbeatIncoming: 4000,
+            heartbeatOutgoing: 4000,
+
+            // Connection callbacks
+            onConnect: (frame) => {
+
+                console.log('Connected to WebSocket:', frame);
+                setConnected(true);
+
+                // Subscribe to messages
+                console.log('Subscribing to /user/queue/messages');
+                client.subscribe(`/user/${userId}/queue/messages`, (message) => {
+                    console.log('📨 Raw message received on /user/queue/messages:', message);
+                    const response = JSON.parse(message.body);
+                    handleWebSocketMessage(response);
+                });
+
+                // Subscribe to chat history
+                console.log('Subscribing to /user/queue/history');
+                client.subscribe(`/user/${userId}/queue/history`, (message) => {
+                    console.log('Raw history received on /user/queue/history:', message);
+                    const history = JSON.parse(message.body);
+                    loadChatHistoryFromWebSocket(history);
+                });
+
+                // Request chat history
+                console.log('Requesting chat history for user:', userId);
+                client.publish({
+                    destination: '/app/chat/history',
+                    body: JSON.stringify({ userId: userId })
+                });
+                console.log('History request sent');
+            },
+
+            onStompError: (frame) => {
+                console.error('STOMP error:', frame);
+                setConnected(false);
+            },
+
+            onWebSocketClose: () => {
+                console.log('WebSocket connection closed');
+                setConnected(false);
+            },
+
+            onWebSocketError: (event) => {
+                console.error('WebSocket error:', event);
+            },
+        });
+
+        client.activate();
+        stompClientRef.current = client;
+    };
+
+    const disconnectWebSocket = () => {
+        if (stompClientRef.current) {
+            stompClientRef.current.deactivate();
+            setConnected(false);
+            console.log('Disconnected from WebSocket');
         }
-    }
+    };
 
-    const handleSend = async () => {
-        if (!input.trim() || !user || loading) return;
+    const handleWebSocketMessage = (response) => {
+        console.log('Received WebSocket message:', response);
 
+        switch (response.type) {
+            // Message received acknowledgment
+            case 'received':
+                console.log('✓ Message received by server');
+                break;
+            // New AI response
+            case 'response':
+                setLoading(false);
+                const aiMessage = {
+                    id: `${response.chatId}-assistant`,
+                    role: 'assistant',
+                    content: response.response,
+                    expression: response.expressionValues,
+                };
+
+                console.log("Expression JSON Values are: " + response.expressionValues);
+
+                // Set response and audio states
+                setResponse(response.response);
+                setMessages(prev => [...prev, aiMessage]);
+
+                // Set audio bytes to trigger playback
+                if (response.audioData && response.audioData.length > 0) {
+                    console.log('Audio data received, size:', response.audioData.length);
+                    setAudio(response.audioData);
+                } else {
+                    console.log('No audio data in response');
+                }
+
+
+                break;
+
+            case 'error':
+                console.error('Server error:', response.message);
+                setLoading(false);
+                setMessages(prev => [...prev, {
+                    id: `error-${Date.now()}`,
+                    role: 'assistant',
+                    content: `Error: ${response.message}`
+                }]);
+                break;
+
+            case 'deleted':
+                console.log('Chat deleted:', response.chatId);
+                setMessages(prev => prev.filter(msg =>
+                    !msg.id.startsWith(`${response.chatId}-`)
+                ));
+                break;
+        }
+    };
+
+    // Load chat history from WebSocket
+    const loadChatHistoryFromWebSocket = (chatHistory) => {
+        console.log('Loading chat history:', chatHistory.length, 'chats');
+
+        const formattedChatHistory = chatHistory.toReversed().flatMap(chat => [
+            {
+                id: `${chat.id}-user`, // Unique ID for user message
+                role: 'user', // User role
+                content: chat.message,
+            },
+            {
+                id: `${chat.id}-assistant`,
+                role: 'assistant',
+                content: chat.response,
+            }
+        ]);
+
+        setMessages(formattedChatHistory);
+    };
+
+    // Handle sending user message
+    const handleSend = () => {
+        // Prevent sending empty messages or if user not set
+        if (!input.trim() || !user || loading || !connected) {
+            if (!connected) {
+                console.warn('Cannot send: WebSocket not connected');
+            }
+            return;
+        }
+
+        // Prepare user message
         const userMessage = input.trim();
+
+        // Optimistically add user message to chat
         const tempUserMessage = {
             id: `temp-user-${Date.now()}`,
             role: 'user',
             content: userMessage,
         };
 
-        // Add all the user messages
+        // Update states
         setMessages((prevMessages) => [...prevMessages, tempUserMessage]);
         setInput('');
         setLoading(true);
 
         try {
-            // Add the user message to the backend
-            const response = await api.post('http://localhost:8080/api/v1/chat/receive-message', {
-                userId: user.id,
-                message: userMessage,
+            // Get STOMP client
+            const client = stompClientRef.current;
+
+            // Publish message to server
+            client.publish({
+                destination: '/app/chat',
+                body: JSON.stringify({
+                    userId: user.id,
+                    message: userMessage
+                })
             });
 
-            // Add the AI response message
-            const aiMessage = {
-                id: `${response.data.id}-assistant`,
-                role: 'assistant',
-                content: response.data.response,
-            };
+            console.log('Message sent via WebSocket:', userMessage);
 
-            // Update the messages state with the AI message
-            setMessages(prevMessages => [...prevMessages, aiMessage]);
         } catch (error) {
             console.error('Error sending message:', error);
+            setLoading(false);
 
-            // Add error message
             setMessages(prev => [...prev, {
                 id: `error-${Date.now()}`,
                 role: 'assistant',
-                content: 'Sorry, I encountered an error. Please try again.'
+                content: 'Sorry, I encountered an error sending your message. Please try again.'
             }]);
-        } finally {
-            setLoading(false);
         }
-    }
+    };
 
-    // Get the user and their messages from navigation state or local storage
+    // Clear chat history
+    const handleClearChat = () => {
+        setMessages([]);
+        setResponse('');
+        setAudio(null);
+        console.log('Chat history cleared');
+    };
+
     useEffect(() => {
         if (location.state?.user) {
-            const user = location.state.user;
-            setUser(user);
-            loadChatHistory(location.state.user.id).then();
-            console.log(user.username);
+            // Set user from navigation state
+            const currentUser = location.state.user;
+            setUser(currentUser);
+            connectWebSocket(currentUser.id);
+            console.log('User from navigation:', currentUser.username);
         } else {
             const storedUser = localStorage.getItem('user');
             if (storedUser) {
+                // Parse and set user from localStorage
                 const parsedUser = JSON.parse(storedUser);
                 setUser(parsedUser);
-                loadChatHistory(parsedUser.id).then();
+                connectWebSocket(parsedUser.id);
+                console.log('User from localStorage:', parsedUser.username);
             } else {
+                // No user found, redirect to login page
+                console.log('No user found, redirecting to login');
                 navigate('/login');
             }
         }
+
+        return () => {
+            disconnectWebSocket();
+        };
     }, [location, navigate]);
 
     if (!user) {
@@ -123,18 +278,29 @@ export default function Chatbot() {
 
     return (
         <div className="flex flex-col h-screen bg-gray-50">
-            <VideoControls/>
-            <Header user={user}/>
-            <MessageList messages={messages} loading={loading}/>
+
+            {!connected && (
+                <div className="bg-yellow-100 text-yellow-800 px-4 py-2 text-center text-sm">
+                     Reconnecting to server...
+                </div>
+            )}
+
+            <Header user={user} clearChat={handleClearChat} isGuest={false} />
+
+            {/* Three.js Scene - Takes all available space */}
+            <div className="flex-1 relative overflow-hidden">
+                <Scene />
+            </div>
+            <MessageList messages={messages} loading={loading} />
             <MessageBox
                 input={input}
                 setInput={setInput}
                 onSend={handleSend}
                 loading={loading}
+                disabled={!connected}
             />
+            {/* Audio player - plays automatically when audioBytes change */}
+            <TTSControls audioData={audio} autoPlay={true} />
         </div>
     );
 }
-
-
-

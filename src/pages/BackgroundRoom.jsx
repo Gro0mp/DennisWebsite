@@ -14,7 +14,7 @@ import {Model as Room} from "../components/Room.jsx";
 import { Leva } from "leva";
 
 function Light() {
-    const ref = useRef();
+    const ref = useRef(null);
     useFrame((state, delta) => {
         easing.dampE(
             ref.current.rotation,

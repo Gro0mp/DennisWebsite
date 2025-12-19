@@ -82,6 +82,7 @@ export default function SignInCard() {
         password: password,
       });
 
+      // If the response back from the backend is successful, set login success to true
       if (response.status === 200) {
         setLoginSuccess(true);
         console.log('Login successful:', response.data);

@@ -1,6 +1,13 @@
-import { Send } from 'lucide-react';
+import { Send, Mic } from 'lucide-react';
 
-export const MessageBox = ({ input, setInput, onSend, loading }) => {
+export const MessageBox = ({
+                               input,
+                               setInput,
+                               onSend,
+                               loading,
+                               disabled,
+                               isGuest = false,
+                           }) => {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -9,35 +16,52 @@ export const MessageBox = ({ input, setInput, onSend, loading }) => {
     };
 
     return (
-        <div className="bg-white border-t border-gray-200 p-4">
-            <div className="max-w-3xl mx-auto">
+        <div className="fixed bottom-0 left-0 w-full z-20 pointer-events-none">
+            <div className="max-w-3xl mx-auto p-4 pointer-events-auto">
+                {/* Input Row */}
                 <div className="flex gap-3 items-end">
-                    <div className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl focus-within:border-orange-400 focus-within:ring-2 focus-within:ring-orange-100 transition-all">
-                        <textarea
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            placeholder="Message the assistant..."
-                            className="w-full px-4 py-3 bg-transparent resize-none focus:outline-none text-sm text-gray-900"
-                            rows={1}
-                            disabled={loading}  // ← ADD THIS
-                        />
+                    {/* Text Input */}
+                    <div className="flex-1 rounded-2xl border border-white/20 backdrop-blur-md bg-white/5 focus-within:border-orange-400 transition-all">
+            <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Message the assistant..."
+                className="w-full px-4 py-3 bg-transparent resize-none focus:outline-none text-sm text-white placeholder-white/60"
+                rows={1}
+                disabled={loading || disabled}
+            />
                     </div>
+
+                    {/* Send Button */}
                     <button
-                        // On click, send the message. Handled by handleSend() method in Chatbot.jsx.
                         onClick={onSend}
-                        disabled={!input.trim() || loading}
-                        className="p-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        disabled={!input.trim() || loading || disabled}
+                        className="p-3 rounded-xl backdrop-blur-md bg-orange-500/90 text-white
+                       hover:bg-orange-600/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
                         {loading ? (
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         ) : (
                             <Send size={20} />
                         )}
                     </button>
+
+                    {/* Mic Button */}
+                    <button
+                        disabled={loading || disabled}
+                        className="p-3 rounded-xl backdrop-blur-md bg-green-500/90 text-white
+                       hover:bg-green-600/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                        <Mic size={20} />
+                    </button>
                 </div>
-                <p className="text-xs text-gray-500 text-center mt-3">
-                    AI remembers your conversation history
+
+                {/* Footer Text */}
+                <p className="text-xs text-white/60 text-center mt-3 select-none">
+                    {isGuest
+                        ? 'Guest mode — conversation history is temporary'
+                        : 'AI remembers your conversation history'}
                 </p>
             </div>
         </div>
