@@ -47,7 +47,7 @@ This project consists of two Docker containers that work together:
 - Docker Desktop installed and running
 - Docker Compose (usually included with Docker Desktop)
 - At least 8GB of available RAM
-- Ports 3000 and 8080 available
+- Ports 5174 (Front End), 8080 (Back End), and 11434 (Ollama) available
 
 ## Installation & Setup
 
@@ -57,37 +57,35 @@ This project consists of two Docker containers that work together:
 git clone https://github.com/Gro0mp/InteractiveVirtualAssistant
 cd InteractiveVirtualAssistant
 ```
+### 2. Set Up Google Cloud Authentication
 
-### 2. Build Docker Images
+- Go to the Google Cloud Website and create a new project. Within the project, activate the Cloud Text-to-Speech API.
+https://docs.cloud.google.com/text-to-speech/docs/reference/rest
 
-The project includes Docker configurations for both frontend and backend:
+- Afterwards, go to your console and enter the APIs and Services Page.
+<img width="2306" height="551" alt="image" src="https://github.com/user-attachments/assets/f66d54d9-7e1e-4c59-9714-5e9f0fccac99" />
+
+- Enter the credentials tab on the right hand side. After you have entered the credentials tab, click on "Create Credentials" and create a new Service account.
+<img width="958" height="562" alt="image" src="https://github.com/user-attachments/assets/1e289c97-e29f-43bb-b032-8f9560cb9af6" />
+
+- Follow the instructions on the credential creation page. For my case, I set permissions to Owner.
+<img width="1111" height="906" alt="image" src="https://github.com/user-attachments/assets/48fe7ca6-ef7b-481b-923f-35a3a12fb346" />
+
+- After the service account has been created, enter it and click on the keys tab. Within, create a new key with the JSON format
+<img width="2377" height="1331" alt="image" src="https://github.com/user-attachments/assets/0e2b68c7-6214-4816-a13a-6bce0acb52e8" />
+
+- Set the path of the JSON you created and downloaded to the root of your system. Open a terminal and enter the following commands.
 
 ```bash
-# Build both containers
-docker-compose build
+cd\
+mkdir GoogleCloudCredentials
+move C:\Users\<Username>\Downloads\example.json C:\GoogleCloudCredentials\
+setx GOOGLE_APPLICATION_CREDENTIALS "C:\GoogleCloudCredentials\example.json"
 ```
 
-### 3. Run the Application
+3. 
 
-Start both containers with a single command:
 
-```bash
-docker-compose up
-```
-
-Or run them in detached mode:
-
-```bash
-docker-compose up -d
-```
-
-### 4. Access the Application
-
-Once both containers are running:
-
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:8080
-- **WebSocket**: ws://localhost:8080/websocket
 
 ## Usage
 
