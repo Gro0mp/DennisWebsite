@@ -88,14 +88,31 @@ setx GOOGLE_APPLICATION_CREDENTIALS "C:\GoogleCloudCredentials\example.json"
 
 https://ollama.com/
 
-Afterwards, once you have installed it, run the following command in your terminal
+- Afterwards, once you have installed it, run the following command in your terminal.
 ```bash
-docker pull gemma3:4b
+ollama pull gemma3:4b
 ```
 
-### 4. Obtain and run Docker Images.
-WIP
+### 4. Install and Run Docker Images
+ - If you do not have Docker on your system, please install it following the directions on the Docker Website.
 
+https://www.docker.com/get-started/
+
+- After it has been installed, open a terminal and run the following commands.
+```bash
+docker pull dennisw342/virtual-assistant-frontend
+docker pull dennisw342/virtual-assistant-backend
+docker pull postgres:18
+docker pull ollama/ollama:latest
+```
+
+- Finally, run all of these images.
+```bash
+docker run dennisw342/virtual-assistant-frontend
+docker run dennisw342/virtual-assistant-backend
+docker run postgres:18
+docker run ollama/ollama:latest
+```
 
 ## Usage
 
