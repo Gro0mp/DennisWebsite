@@ -3,7 +3,7 @@ import {RevealOnScroll} from "../RevealOnScroll.jsx";
 export const About = () => {
 
     const frontendSkills = ["React", "ReactDOM", "Vite", "TailwindCSS", "Javascript", "Typescript"];
-    const backendSkills = ["NodeJS", "Python", "Azure", "SQL", "MongoDB", "ThingsBoard"]
+    const backendSkills = ["NodeJS", "Azure", "Google Cloud Platform", "PostgresSQL", "MongoDB", "Spring Boot"]
 
     return (
         <section id="about" className="min-h-screen flex items-center justify-center py-20">
@@ -15,7 +15,7 @@ export const About = () => {
 
                     <div className={`rounded-xl p-8 border-white/10 bg-gray-500/20 bg-opacity-90 backdrop-filter backdrop-blur-xs border hover:-translate-y-1 transition-all`}>
                         <p className={`text-gray-300 mb-6`}>
-                            I'm Dennis Wong, a Computer Science student at UMass Boston with a 3.9 GPA, specializing in
+                            I'm Dennis Wong, a Computer Science graduate from UMass Boston, specializing in
                             software development and
                             data analysis. I bring hands-on experience from roles like Prospect Research Data Assistant,
                             where I supported scholarships by
