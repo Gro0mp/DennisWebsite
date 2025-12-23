@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import Model from './Model.jsx';
 import ModernRoom from './ModernRoom.jsx';
 import {useEffect} from "react";
-import {Environment} from "@react-three/drei";
+import {ContactShadows, Environment} from "@react-three/drei";
 
 /* ---------------- HDRI MAP ---------------- */
 
