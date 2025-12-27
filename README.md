@@ -1,9 +1,6 @@
 # Interactive Virtual Assistant
 
 An immersive 3D virtual assistant powered by AI, featuring real-time conversation, text-to-speech, dynamic facial expressions, and animated poses.
-<img width="2855" height="1442" alt="image" src="https://github.com/user-attachments/assets/e07865f9-1776-4d1c-8b8e-c1a134729c87" />
-
-![Virtual Assistant Demo](https://via.placeholder.com/800x400?text=Virtual+Assistant+Demo)
 
 ## Features
 
