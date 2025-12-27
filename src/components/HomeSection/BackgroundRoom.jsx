@@ -10,7 +10,7 @@ import {
 import { useControls } from "leva";
 import { Perf } from "r3f-perf";
 import { easing } from "maath";
-import {Model as Room} from "../components/Room.jsx";
+import {Model as Room} from "../Room.jsx";
 import { Leva } from "leva";
 
 function Light() {

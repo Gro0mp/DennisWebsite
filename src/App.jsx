@@ -9,6 +9,7 @@ import {About} from "./components/HomeSection/About.jsx";
 import {Projects} from "./components/HomeSection/Projects.jsx";
 import {Contacts} from "./components/HomeSection/Contacts.jsx";
 import {WorkExperience} from "./components/HomeSection/WorkExperience.jsx";
+import Portfolio from "./pages/Portfolio.jsx";
 
 // Tutorial Components
 import {Tutorial} from "./pages/Tutorial.jsx";
@@ -24,27 +25,11 @@ import {Scene} from "./components/ChatbotSection/scene/Scene.jsx";
 import Login from "./pages/Login.jsx";
 import SignUp from "./pages/Signup.jsx";
 
-import BackgroundRoom from "./pages/BackgroundRoom.jsx";
+import BackgroundRoom from "./components/HomeSection/BackgroundRoom.jsx";
 
 import {BrowserRouter, HashRouter, Routes, Route, useLocation} from "react-router-dom";
 import {useRef, useState} from "react";
 
-
-// Create a main portfolio page component
-function Portfolio() {
-    return (
-        <>
-            <div className="fixed top-0 left-0 w-full h-full">
-                <BackgroundRoom/>
-            </div>
-            <Home/>
-            <About/>
-            <WorkExperience />
-            <Projects/>
-            <Contacts/>
-        </>
-    );
-}
 
 // Layout component that conditionally shows navbar
 function Layout({children}) {
