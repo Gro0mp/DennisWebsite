@@ -1,6 +1,8 @@
 # Interactive Virtual Assistant
 
-An immersive 3D virtual assistant powered by AI, featuring real-time conversation, text-to-speech, dynamic facial expressions, and animated poses.
+An immersive 3D virtual assistant powered by AI, featuring real-time conversation, text-to-speech, dynamic facial expressions, and animated poses. Available to test rig at:
+
+[dwong.net/chatbot-test](https://dwong.net/chatbot-test)
 
 ## Features
 
