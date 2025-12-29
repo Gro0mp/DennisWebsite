@@ -115,7 +115,7 @@ export const Projects = () => {
                             </div>
 
                             <div className={`flex justify-between items-center`}>
-                                <a href={`https://github.com/Gro0mp/InteractiveVirtualAssistant`}
+                                <a href={`https://github.com/Gro0mp/DennisWebsite/tree/main/src/InteractiveVirtualAssistant`}
                                    className={`text-blue-400 hover:text-blue-300 transition-colors my-4`}>
                                     View Repository
                                 </a>
