@@ -4,28 +4,25 @@ import {Navbar} from "./components/Navbar.jsx";
 import {MobileMenu} from "./components/MobileMenu.jsx";
 
 // Home Page Components
-import {Home} from "./components/HomeSection/Home.jsx";
-import {About} from "./components/HomeSection/About.jsx";
-import {Projects} from "./components/HomeSection/Projects.jsx";
-import {Contacts} from "./components/HomeSection/Contacts.jsx";
-import {WorkExperience} from "./components/HomeSection/WorkExperience.jsx";
-import Portfolio from "./pages/Portfolio.jsx";
-
-// Tutorial Components
-import {Tutorial} from "./pages/Tutorial.jsx";
+import {Home} from "./components/home/Home.jsx";
+import {About} from "./components/home/About.jsx";
+import {Projects} from "./components/home/Projects.jsx";
+import {Contacts} from "./components/home/Contacts.jsx";
+import {WorkExperience} from "./components/home/WorkExperience.jsx";
+import Portfolio from "./Home/pages/Portfolio.jsx";
 
 
 // Chatbot Components
-import Chatbot from "./pages/Chatbot.jsx";
-import ChatBotBeta from "./pages/ChatBotBeta.jsx";
-import VideoControls from "./components/ChatbotSection/videoControls/VideoControls.jsx";
-import {Scene} from "./components/ChatbotSection/scene/Scene.jsx";
+import Chatbot from "./InteractiveVirtualAssistant/pages/Chatbot.jsx";
+import ChatBotBeta from "./InteractiveVirtualAssistant/pages/ChatBotBeta.jsx";
+import VideoControls from "./components/interactivevirtualassistant/videoControls/VideoControls.jsx";
+import {Scene} from "./components/interactivevirtualassistant/scene/Scene.jsx";
 
 // Authentication Components
-import Login from "./pages/Login.jsx";
-import SignUp from "./pages/Signup.jsx";
+import Login from "./InteractiveVirtualAssistant/pages/Login.jsx";
+import SignUp from "./InteractiveVirtualAssistant/pages/Signup.jsx";
 
-import BackgroundRoom from "./components/HomeSection/BackgroundRoom.jsx";
+import BackgroundRoom from "./components/home/BackgroundRoom.jsx";
 
 import {BrowserRouter, HashRouter, Routes, Route, useLocation} from "react-router-dom";
 import {useRef, useState} from "react";
@@ -34,7 +31,7 @@ import {useRef, useState} from "react";
 // Layout component that conditionally shows navbar
 function Layout({children}) {
     const location = useLocation();
-    // Show navbar on portfolio page (root) and exclude specific pages
+    // Show navbar on portfolio page (root) and exclude specific Misc
     const showNavbar = location.pathname === '/' || location.pathname === '/denniswong-portfolio';
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -64,9 +61,6 @@ function App() {
                             <Route path="/denniswong-portfolio" element={<Portfolio />} />
 
                             <Route path="/chatbot" element={<Chatbot />} />
-
-                            {/* WebGPU Test Route */}
-                            <Route path="/tutorial" element={<Tutorial />} />
 
                             {/* Login Route */}
                             <Route path="/login" element={<Login/>}/>

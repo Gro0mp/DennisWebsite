@@ -1,5 +1,5 @@
 import { alpha } from '@mui/material/styles';
-import { gray } from '../LoginSection/themePrimitives.jsx';
+import { gray } from '../login/themePrimitives.jsx';
 
 /* eslint-disable import/prefer-default-export */
 export const surfacesCustomizations = {
