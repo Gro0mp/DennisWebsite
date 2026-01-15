@@ -32,7 +32,7 @@ import {useRef, useState} from "react";
 function Layout({children}) {
     const location = useLocation();
     // Show navbar on portfolio page (root) and exclude specific Misc
-    const showNavbar = location.pathname === '/' || location.pathname === '/denniswong-portfolio';
+    const showNavbar = location.pathname === '/' || location.pathname === '/denniswong-portfolio/';
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
