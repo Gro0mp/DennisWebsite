@@ -4,11 +4,6 @@ import {Navbar} from "./components/Navbar.jsx";
 import {MobileMenu} from "./components/MobileMenu.jsx";
 
 // Home Page Components
-import {Home} from "./components/home/Home.jsx";
-import {About} from "./components/home/About.jsx";
-import {Projects} from "./components/home/Projects.jsx";
-import {Contacts} from "./components/home/Contacts.jsx";
-import {WorkExperience} from "./components/home/WorkExperience.jsx";
 import Portfolio from "./Home/pages/Portfolio.jsx";
 
 

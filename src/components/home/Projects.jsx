@@ -99,11 +99,9 @@ export const Projects = () => {
                             className={`p-6 rounded-xl border border-white/10 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-[0_2px_8px_rgba(59, 130, 246, 0.2)] transition bg-gray-500/20 bg-opacity-90 backdrop-filter backdrop-blur-xs`}>
                             <h3 className={`text-xl font-bold mb-2`}> Interactive Virtual Assistant </h3>
                             <p className={`text-white-400 mb-4`}>
-                                A Java-based recommendation engine that helps users discover new games based on their
-                                Steam
-                                library and preferences. The engine uses fuzzy search algorithms and tag-based analysis
-                                to
-                                provide personalized game recommendations.
+                                An AI-powered virtual assistant built with Java and Spring Boot for the backend and
+                                React for the frontend. It provides natural language processing capabilities, allowing users
+                                to interact with it through text or voice commands.
                             </p>
                             <div className={`flex flex-wrap gap-2 mb-4`}>
                                 {["Java", "Spring Boot", "React", "Vite", "Javascript", "Docker"].map((skill, key) => (
@@ -115,9 +113,9 @@ export const Projects = () => {
                             </div>
 
                             <div className={`flex justify-between items-center`}>
-                                <a href={`https://github.com/Gro0mp/DennisWebsite/tree/main/src/InteractiveVirtualAssistant`}
+                                <a href={`https://iva.dwong.net/`}
                                    className={`text-blue-400 hover:text-blue-300 transition-colors my-4`}>
-                                    View Repository
+                                    View Web App
                                 </a>
                             </div>
                         </div>

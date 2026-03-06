@@ -4,7 +4,6 @@ import { Header } from '../../components/interactivevirtualassistant/chatControl
 import { MessageList } from '../../components/interactivevirtualassistant/chatControls/MessageList.jsx';
 import { MessageBox } from '../../components/interactivevirtualassistant/chatControls/MessageBox.jsx';
 
-import VideoControls from "../../components/interactivevirtualassistant/videoControls/VideoControls.jsx";
 import TTSControls from "../../components/interactivevirtualassistant/audioControls/TTSControls.jsx";
 
 import {Scene} from "../../components/interactivevirtualassistant/scene/Scene.jsx";
